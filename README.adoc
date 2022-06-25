@@ -1,0 +1,31 @@
+= move-streams-poc
+
+== Concepts list
+
+* Random order vs original order
+** vs shuffled?
+
+* JIT selection
+
+* Hashing/indexing through Joiners
+** Filters otherwise
+
+* Avoid/shortcut _dead end selections_
+** For example:
+*** select employee if there are 0 employee instance
+*** select other employee if there is 1 employee instance
+
+* Incremental move selection - What does that mean?
+** Use of Supply when possible
+*** Only update for step scope
+
+* select() vs selectFact() vs selectEntity()
+** select uses class to determine if it's selectFact() or selectEntity()
+*** selectFact() can cache
+*** selectEntity() must listen to step events and adjust accordingly
+
+== Other notes
+
+If A is selected first
+and B is selected second
+then the selection of C doesn't care how B was selected.
