@@ -33,6 +33,10 @@ public class UniSelector<A> {
         this.aClass = aClass;
     }
 
+    // ************************************************************************
+    // Public API
+    // ************************************************************************
+
     public <B> BiSelector<A, B> join(Class<B> bClass) {
         UniSelector<B> other = moveStreamFactory.select(bClass);
         return new BiSelector<>(moveStreamFactory, this, other);
@@ -44,7 +48,11 @@ public class UniSelector<A> {
         return new BiSelector<>(moveStreamFactory, this, other);
     }
 
+    // ************************************************************************
     // Internal API
+    // ************************************************************************
+    // TODO Hide internal API
+
     public A pick() {
         List<A> aList;
         if (aClass.isAssignableFrom(Shift.class)) {

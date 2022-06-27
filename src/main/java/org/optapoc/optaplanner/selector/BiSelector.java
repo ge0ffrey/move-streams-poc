@@ -33,16 +33,25 @@ public class BiSelector<A, B> {
         this.selectorB = selectorB;
     }
 
+    // ************************************************************************
+    // Public API
+    // ************************************************************************
+
+    public <Move_ extends Move> Iterator<Move_> move(Function<BiSelector<A, B>, Iterator<Move_>> moveFunction) {
+        return moveFunction.apply(this);
+    }
+
+    // ************************************************************************
+    // Internal API
+    // ************************************************************************
+    // TODO Hide internal API
+
     public UniSelector<A> getSelectorA() {
         return selectorA;
     }
 
     public UniSelector<B> getSelectorB() {
         return selectorB;
-    }
-
-    public <Move_ extends Move> Iterator<Move_> move(Function<BiSelector<A, B>, Iterator<Move_>> moveFunction) {
-        return moveFunction.apply(this);
     }
 
 }

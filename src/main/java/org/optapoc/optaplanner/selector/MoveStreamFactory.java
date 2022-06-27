@@ -36,6 +36,24 @@ public class MoveStreamFactory {
         this.shiftList = shiftList;
     }
 
+    // ************************************************************************
+    // Public API
+    // ************************************************************************
+
+    public <A> UniSelector<A> select(Class<A> aClass) {
+        return new UniSelector<>(this, aClass);
+    }
+
+    public <ValueA_, EntityA_> UniSelector<Pillar<ValueA_, EntityA_>> selectPillar(Class<EntityA_> entityAClass,
+            Function<EntityA_, ValueA_> entityToValueAFunction) {
+        return new UniSelector<>(this, null); // TODO FIXME
+    }
+
+    // ************************************************************************
+    // Internal API
+    // ************************************************************************
+    // TODO Hide internal API
+
     protected Random getRandom() {
         return random;
     }
@@ -46,15 +64,6 @@ public class MoveStreamFactory {
 
     protected List<Shift> getShiftList() {
         return shiftList;
-    }
-
-    public <A> UniSelector<A> select(Class<A> aClass) {
-        return new UniSelector<>(this, aClass);
-    }
-
-    public <ValueA_, EntityA_> UniSelector<Pillar<ValueA_, EntityA_>> selectPillar(Class<EntityA_> entityAClass,
-            Function<EntityA_, ValueA_> entityToValueAFunction) {
-        return new UniSelector<>(this, null); // TODO FIXME
     }
 
 }
