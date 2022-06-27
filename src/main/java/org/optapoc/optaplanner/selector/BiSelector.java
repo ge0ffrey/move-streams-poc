@@ -16,6 +16,11 @@
 
 package org.optapoc.optaplanner.selector;
 
+import java.util.Iterator;
+import java.util.function.Function;
+
+import org.optapoc.optaplanner.move.Move;
+
 public class BiSelector<A, B> {
 
     private MoveStreamFactory moveStreamFactory;
@@ -26,6 +31,18 @@ public class BiSelector<A, B> {
         this.moveStreamFactory = moveStreamFactory;
         this.selectorA = selectorA;
         this.selectorB = selectorB;
+    }
+
+    public UniSelector<A> getSelectorA() {
+        return selectorA;
+    }
+
+    public UniSelector<B> getSelectorB() {
+        return selectorB;
+    }
+
+    public <Move_ extends Move> Iterator<Move_> move(Function<BiSelector<A, B>, Iterator<Move_>> moveFunction) {
+        return moveFunction.apply(this);
     }
 
 }

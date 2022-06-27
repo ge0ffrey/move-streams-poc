@@ -17,9 +17,11 @@
 package org.optapoc.optaplanner.selector;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.optapoc.domain.Employee;
 import org.optapoc.domain.Shift;
+import org.optapoc.optaplanner.move.Pillar;
 
 public class UniSelector<A> {
 
@@ -32,15 +34,18 @@ public class UniSelector<A> {
     }
 
     public <B> BiSelector<A, B> join(Class<B> bClass) {
-        UniSelector<B> other = new UniSelector<>(moveStreamFactory, bClass);
+        UniSelector<B> other = moveStreamFactory.select(bClass);
         return new BiSelector<>(moveStreamFactory, this, other);
     }
 
-    public void joinPillar(Class<Shift> shiftClass) {
-
+    public <ValueB_, EntityB_> BiSelector<A, Pillar<ValueB_, EntityB_>>
+            joinPillar(Class<EntityB_> entityBClass, Function<EntityB_, ValueB_> entityToValueBFunction) {
+        UniSelector<Pillar<ValueB_, EntityB_>> other = moveStreamFactory.selectPillar(entityBClass, entityToValueBFunction);
+        return new BiSelector<>(moveStreamFactory, this, other);
     }
 
-    protected A pick() {
+    // Internal API
+    public A pick() {
         List<A> aList;
         if (aClass.isAssignableFrom(Shift.class)) {
             aList = (List<A>) moveStreamFactory.getShiftList();
@@ -51,4 +56,5 @@ public class UniSelector<A> {
         }
         return aList.get(moveStreamFactory.getRandom().nextInt(aList.size()));
     }
+
 }

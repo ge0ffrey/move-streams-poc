@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.optapoc.domain.Employee;
 import org.optapoc.domain.Shift;
+import org.optapoc.optaplanner.move.Moves;
 import org.optapoc.optaplanner.move.PillarSwapMove;
 import org.optapoc.optaplanner.move.SwapMove;
 import org.optapoc.optaplanner.selector.MoveStreamFactory;
@@ -55,8 +56,11 @@ class RunExperimentTest {
     public void select() {
         MoveStreamFactory moveStreamFactory = new MoveStreamFactory(employeeList, shiftList);
 
-        Iterator<SwapMove<Shift>> moveIterator = moveStreamFactory.swap(moveStreamFactory.select(Shift.class),
-                moveStreamFactory.select(Shift.class));
+        Iterator<SwapMove<Shift>> moveIterator
+                = moveStreamFactory.select(Shift.class)
+                    .join(Shift.class)
+                    .move(Moves.swap());
+
 
         while (moveIterator.hasNext()) {
             SwapMove<Shift> move = moveIterator.next();
@@ -69,10 +73,10 @@ class RunExperimentTest {
     public void selectPillar() {
         MoveStreamFactory moveStreamFactory = new MoveStreamFactory(employeeList, shiftList);
 
-        Iterator<PillarSwapMove<Employee, Shift>> moveIterator = moveStreamFactory.swapPillar(
-                moveStreamFactory.selectPillar(Shift.class, Shift::getEmployee),
-                moveStreamFactory.selectPillar(Shift.class, Shift::getEmployee)
-        );
+        Iterator<PillarSwapMove<Employee, Shift>> moveIterator
+                = moveStreamFactory.selectPillar(Shift.class, Shift::getEmployee)
+                        .joinPillar(Shift.class, Shift::getEmployee)
+                        .move(Moves.swapPillar());
 
         while (moveIterator.hasNext()) {
             PillarSwapMove<Employee, Shift> move = moveIterator.next();
