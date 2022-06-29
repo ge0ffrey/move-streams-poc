@@ -23,9 +23,9 @@ import org.optapoc.optaplanner.move.Move;
 
 public class BiSelector<A, B> {
 
-    private MoveStreamFactory moveStreamFactory;
-    private UniSelector<A> selectorA;
-    private UniSelector<B> selectorB;
+    private final MoveStreamFactory moveStreamFactory;
+    private final UniSelector<A> selectorA;
+    private final UniSelector<B> selectorB;
 
     public BiSelector(MoveStreamFactory moveStreamFactory, UniSelector<A> selectorA, UniSelector<B> selectorB) {
         this.moveStreamFactory = moveStreamFactory;

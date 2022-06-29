@@ -58,7 +58,7 @@ class RunExperimentTest {
 
         Iterator<SwapMove<Shift>> moveIterator
                 = moveStreamFactory.select(Shift.class)
-                    .join(Shift.class)
+                    .combine(Shift.class)
                     .move(Moves.swap());
 
 
@@ -75,7 +75,7 @@ class RunExperimentTest {
 
         Iterator<PillarSwapMove<Employee, Shift>> moveIterator
                 = moveStreamFactory.selectPillar(Shift.class, Shift::getEmployee)
-                        .joinPillar(Shift.class, Shift::getEmployee)
+                        .combinePillar(Shift.class, Shift::getEmployee)
                         .move(Moves.swapPillar());
 
         while (moveIterator.hasNext()) {

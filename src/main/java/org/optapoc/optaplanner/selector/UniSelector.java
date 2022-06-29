@@ -19,31 +19,29 @@ package org.optapoc.optaplanner.selector;
 import java.util.List;
 import java.util.function.Function;
 
-import org.optapoc.domain.Employee;
-import org.optapoc.domain.Shift;
 import org.optapoc.optaplanner.move.Pillar;
 
 public class UniSelector<A> {
 
-    private MoveStreamFactory moveStreamFactory;
-    private Class<A> aClass;
+    private final MoveStreamFactory moveStreamFactory;
+    private final List<A> list;
 
-    public UniSelector(MoveStreamFactory moveStreamFactory, Class<A> aClass) {
+    public UniSelector(MoveStreamFactory moveStreamFactory, List<A> list) {
         this.moveStreamFactory = moveStreamFactory;
-        this.aClass = aClass;
+        this.list = list;
     }
 
     // ************************************************************************
     // Public API
     // ************************************************************************
 
-    public <B> BiSelector<A, B> join(Class<B> bClass) {
+    public <B> BiSelector<A, B> combine(Class<B> bClass) {
         UniSelector<B> other = moveStreamFactory.select(bClass);
         return new BiSelector<>(moveStreamFactory, this, other);
     }
 
     public <ValueB_, EntityB_> BiSelector<A, Pillar<ValueB_, EntityB_>>
-            joinPillar(Class<EntityB_> entityBClass, Function<EntityB_, ValueB_> entityToValueBFunction) {
+            combinePillar(Class<EntityB_> entityBClass, Function<EntityB_, ValueB_> entityToValueBFunction) {
         UniSelector<Pillar<ValueB_, EntityB_>> other = moveStreamFactory.selectPillar(entityBClass, entityToValueBFunction);
         return new BiSelector<>(moveStreamFactory, this, other);
     }
@@ -54,15 +52,7 @@ public class UniSelector<A> {
     // TODO Hide internal API
 
     public A pick() {
-        List<A> aList;
-        if (aClass.isAssignableFrom(Shift.class)) {
-            aList = (List<A>) moveStreamFactory.getShiftList();
-        } else if (aClass.isAssignableFrom(Employee.class)) {
-            aList = (List<A>) moveStreamFactory.getEmployeeList();
-        } else {
-            throw new UnsupportedOperationException("Unknown aClass " + aClass);
-        }
-        return aList.get(moveStreamFactory.getRandom().nextInt(aList.size()));
+        return list.get(moveStreamFactory.getRandom().nextInt(list.size()));
     }
 
 }

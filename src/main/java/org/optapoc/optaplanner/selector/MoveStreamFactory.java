@@ -17,8 +17,10 @@
 package org.optapoc.optaplanner.selector;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.optapoc.domain.Employee;
 import org.optapoc.domain.Shift;
@@ -31,6 +33,9 @@ public class MoveStreamFactory {
     private List<Employee> employeeList;
     private List<Shift> shiftList;
 
+    // Cached supplies
+    private Map<Employee, List<Shift>> employeeToShiftMap = null;
+
     public MoveStreamFactory(List<Employee> employeeList, List<Shift> shiftList) {
         this.employeeList = employeeList;
         this.shiftList = shiftList;
@@ -41,12 +46,29 @@ public class MoveStreamFactory {
     // ************************************************************************
 
     public <A> UniSelector<A> select(Class<A> aClass) {
-        return new UniSelector<>(this, aClass);
+        List<A> list;
+        if (aClass.isAssignableFrom(Shift.class)) {
+            list = (List<A>) shiftList;
+        } else if (aClass.isAssignableFrom(Employee.class)) {
+            list = (List<A>) employeeList;
+        } else {
+            throw new UnsupportedOperationException("Unknown aClass " + aClass);
+        }
+        return new UniSelector<>(this, list);
     }
 
     public <ValueA_, EntityA_> UniSelector<Pillar<ValueA_, EntityA_>> selectPillar(Class<EntityA_> entityAClass,
             Function<EntityA_, ValueA_> entityToValueAFunction) {
-        return new UniSelector<>(this, null); // TODO FIXME
+        Map<ValueA_, List<EntityA_>> map;
+        if (entityAClass.isAssignableFrom(Shift.class)) { // TODO check if entityToValueAFunction is getEmployee
+            map = (Map) demandEmployeeToShiftMap();
+        } else {
+            throw new UnsupportedOperationException("Unknown entityAClass " + entityAClass);
+        }
+        // TODO this breaks incremental updates during steps
+        return new UniSelector<>(this, map.entrySet().stream()
+                .map(entry -> new Pillar<>(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList()));
     }
 
     // ************************************************************************
@@ -64,6 +86,15 @@ public class MoveStreamFactory {
 
     protected List<Shift> getShiftList() {
         return shiftList;
+    }
+
+    public Map<Employee, List<Shift>> demandEmployeeToShiftMap() {
+        // Supply
+        if (employeeToShiftMap == null) {
+            // TODO employees with no shifts are lacking.
+            employeeToShiftMap = shiftList.stream().collect(Collectors.groupingBy(Shift::getEmployee));
+        }
+        return employeeToShiftMap;
     }
 
 }
