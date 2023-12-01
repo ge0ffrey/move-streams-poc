@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-package org.optapoc.optaplanner.move;
+package ai.timefold.poc.timefold.move;
 
-public interface Move {
+public class SwapMove<A> implements Move {
 
+    private A a1;
+    private A a2;
+
+    public SwapMove(A a1, A a2) {
+        this.a1 = a1;
+        this.a2 = a2;
+    }
+
+    public A getA1() {
+        return a1;
+    }
+
+    public A getA2() {
+        return a2;
+    }
+
+    @Override
+    public String toString() {
+        return a1 + " <-> " + a2;
+    }
 }

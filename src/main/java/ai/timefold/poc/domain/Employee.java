@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package org.optapoc.optaplanner.move;
+package ai.timefold.poc.domain;
 
-import java.util.List;
+public class Employee {
 
-public class Pillar<Value_, Entity_> {
+    private String name;
+    private String skill;
 
-    private Value_ value;
-    private List<Entity_> entityList;
-
-    public Pillar(Value_ value, List<Entity_> entityList) {
-        this.value = value;
-        this.entityList = entityList;
+    public Employee(String name, String skill) {
+        this.name = name;
+        this.skill = skill;
     }
 
-    public Value_ getValue() {
-        return value;
+    public String getName() {
+        return name;
     }
 
-    public List<Entity_> getEntityList() {
-        return entityList;
+    public String getSkill() {
+        return skill;
     }
 
     @Override
     public String toString() {
-        return value + "(" + entityList + ")";
+        return name;
     }
 
 }

@@ -14,40 +14,29 @@
  * limitations under the License.
  */
 
-package org.optapoc.domain;
+package ai.timefold.poc.timefold.move;
 
-public class Shift {
+public class PillarSwapMove<Value_, Entity_> implements Move {
 
-    private String dateTime;
-    private String requiredSkill;
+    private Pillar<Value_, Entity_> a;
+    private Pillar<Value_, Entity_> b;
 
-    private Employee employee;
-
-    public Shift(String dateTime, String requiredSkill, Employee employee) {
-        this.dateTime = dateTime;
-        this.requiredSkill = requiredSkill;
-        this.employee = employee;
+    public PillarSwapMove(Pillar<Value_, Entity_> a, Pillar<Value_, Entity_> b) {
+        this.a = a;
+        this.b = b;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public Pillar<Value_, Entity_> getA() {
+        return a;
     }
 
-    public String getRequiredSkill() {
-        return requiredSkill;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public Pillar<Value_, Entity_> getB() {
+        return b;
     }
 
     @Override
     public String toString() {
-        return dateTime;
+        return a + " <-> " + b;
     }
 
 }

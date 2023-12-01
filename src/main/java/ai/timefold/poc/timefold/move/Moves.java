@@ -1,9 +1,9 @@
-package org.optapoc.optaplanner.move;
+package ai.timefold.poc.timefold.move;
 
 import java.util.Iterator;
 import java.util.function.Function;
 
-import org.optapoc.optaplanner.selector.BiSelector;
+import ai.timefold.poc.timefold.selector.BiSelector;
 
 public class Moves {
 
@@ -25,7 +25,9 @@ public class Moves {
         };
     }
 
-    public static <Value_, Entity_> Function<BiSelector<Pillar<Value_, Entity_>, Pillar<Value_, Entity_>>, Iterator<PillarSwapMove<Value_, Entity_>>> swapPillar() {
+    public static <Value_, Entity_>
+            Function<BiSelector<Pillar<Value_, Entity_>, Pillar<Value_, Entity_>>, Iterator<PillarSwapMove<Value_, Entity_>>>
+            swapPillar() {
         // TODO caching: Map<Employee, List<Shift>> employeeToShiftMap = shiftList.stream().collect(Collectors.groupingBy(Shift::getEmployee));
         return selector -> new Iterator<>() {
             int count = 0;

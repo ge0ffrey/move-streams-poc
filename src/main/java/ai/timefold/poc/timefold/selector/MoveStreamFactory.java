@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optapoc.optaplanner.selector;
+package ai.timefold.poc.timefold.selector;
 
 import java.util.List;
 import java.util.Map;
@@ -22,9 +22,9 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.optapoc.domain.Employee;
-import org.optapoc.domain.Shift;
-import org.optapoc.optaplanner.move.Pillar;
+import ai.timefold.poc.domain.Employee;
+import ai.timefold.poc.domain.Shift;
+import ai.timefold.poc.timefold.move.Pillar;
 
 public class MoveStreamFactory {
 

@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.optapoc;
+package ai.timefold.poc;
 
 import java.util.Iterator;
 import java.util.List;
 
+import ai.timefold.poc.domain.Employee;
+import ai.timefold.poc.domain.Shift;
+import ai.timefold.poc.timefold.move.Moves;
+import ai.timefold.poc.timefold.move.PillarSwapMove;
+import ai.timefold.poc.timefold.move.SwapMove;
+import ai.timefold.poc.timefold.selector.MoveStreamFactory;
+
 import org.junit.jupiter.api.Test;
-import org.optapoc.domain.Employee;
-import org.optapoc.domain.Shift;
-import org.optapoc.optaplanner.move.Moves;
-import org.optapoc.optaplanner.move.PillarSwapMove;
-import org.optapoc.optaplanner.move.SwapMove;
-import org.optapoc.optaplanner.selector.MoveStreamFactory;
 
 class RunExperimentTest {
 
@@ -39,8 +40,7 @@ class RunExperimentTest {
             beth,
             carl,
             dan,
-            edna
-    );
+            edna);
     List<Shift> shiftList = List.of(
             new Shift("mon 06:00-14:00", "smart", ann),
             new Shift("mon 14:00-22:00", "smart", beth),
@@ -49,18 +49,15 @@ class RunExperimentTest {
             new Shift("tue 06:00-14:00", "smart", ann),
             new Shift("tue 14:00-22:00", "smart", beth),
             new Shift("tue 14:00-22:00", "strong", carl),
-            new Shift("tue 22:00-06:00", "smart", dan)
-    );
+            new Shift("tue 22:00-06:00", "smart", dan));
 
     @Test
     public void select() {
         MoveStreamFactory moveStreamFactory = new MoveStreamFactory(employeeList, shiftList);
 
-        Iterator<SwapMove<Shift>> moveIterator
-                = moveStreamFactory.select(Shift.class)
-                    .combine(Shift.class)
-                    .move(Moves.swap());
-
+        Iterator<SwapMove<Shift>> moveIterator = moveStreamFactory.select(Shift.class)
+                .combine(Shift.class)
+                .move(Moves.swap());
 
         while (moveIterator.hasNext()) {
             SwapMove<Shift> move = moveIterator.next();
@@ -73,10 +70,9 @@ class RunExperimentTest {
     public void selectPillar() {
         MoveStreamFactory moveStreamFactory = new MoveStreamFactory(employeeList, shiftList);
 
-        Iterator<PillarSwapMove<Employee, Shift>> moveIterator
-                = moveStreamFactory.selectPillar(Shift.class, Shift::getEmployee)
-                        .combinePillar(Shift.class, Shift::getEmployee)
-                        .move(Moves.swapPillar());
+        Iterator<PillarSwapMove<Employee, Shift>> moveIterator = moveStreamFactory.selectPillar(Shift.class, Shift::getEmployee)
+                .combinePillar(Shift.class, Shift::getEmployee)
+                .move(Moves.swapPillar());
 
         while (moveIterator.hasNext()) {
             PillarSwapMove<Employee, Shift> move = moveIterator.next();

@@ -14,31 +14,36 @@
  * limitations under the License.
  */
 
-package org.optapoc.optaplanner.selector;
+package ai.timefold.poc.timefold.selector;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.function.Function;
 
-import org.optapoc.optaplanner.move.Move;
+import ai.timefold.poc.timefold.move.Pillar;
 
-public class BiSelector<A, B> {
+public class UniSelector<A> {
 
     private final MoveStreamFactory moveStreamFactory;
-    private final UniSelector<A> selectorA;
-    private final UniSelector<B> selectorB;
+    private final List<A> list;
 
-    public BiSelector(MoveStreamFactory moveStreamFactory, UniSelector<A> selectorA, UniSelector<B> selectorB) {
+    public UniSelector(MoveStreamFactory moveStreamFactory, List<A> list) {
         this.moveStreamFactory = moveStreamFactory;
-        this.selectorA = selectorA;
-        this.selectorB = selectorB;
+        this.list = list;
     }
 
     // ************************************************************************
     // Public API
     // ************************************************************************
 
-    public <Move_ extends Move> Iterator<Move_> move(Function<BiSelector<A, B>, Iterator<Move_>> moveFunction) {
-        return moveFunction.apply(this);
+    public <B> BiSelector<A, B> combine(Class<B> bClass) {
+        UniSelector<B> other = moveStreamFactory.select(bClass);
+        return new BiSelector<>(moveStreamFactory, this, other);
+    }
+
+    public <ValueB_, EntityB_> BiSelector<A, Pillar<ValueB_, EntityB_>>
+            combinePillar(Class<EntityB_> entityBClass, Function<EntityB_, ValueB_> entityToValueBFunction) {
+        UniSelector<Pillar<ValueB_, EntityB_>> other = moveStreamFactory.selectPillar(entityBClass, entityToValueBFunction);
+        return new BiSelector<>(moveStreamFactory, this, other);
     }
 
     // ************************************************************************
@@ -46,12 +51,8 @@ public class BiSelector<A, B> {
     // ************************************************************************
     // TODO Hide internal API
 
-    public UniSelector<A> getSelectorA() {
-        return selectorA;
-    }
-
-    public UniSelector<B> getSelectorB() {
-        return selectorB;
+    public A pick() {
+        return list.get(moveStreamFactory.getRandom().nextInt(list.size()));
     }
 
 }
